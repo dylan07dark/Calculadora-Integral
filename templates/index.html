@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Integrales</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Serif+JP:wght@200..900&display=swap" rel="stylesheet">
+    <style>
+        h1 {
+            font-family: "Bebas Neue", sans-serif;
+            font-size: 3.2em;
+            color: #000000;
+        }
+
+        body {
+            background-image: url('https://img.freepik.com/vector-gratis/fondo-cielo-pastel-acuarela-pintado-mano_23-2148902028.jpg');
+            background-size: cover;
+            font-family: "Bebas Neue", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #a569bd;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px #17202a;
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .menu button {
+            padding: 10px;
+            background-color: #c39bd3;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            width: 200px;
+            text-align: center;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu button:hover {
+            background-color:  #d7bde2 ;
+        }
+
+        .form-container {
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        .form-container h2 {
+            margin-top: 0;
+            color: #666;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .results, .error {
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .results {
+            color: #000;
+        }
+
+        .results p {
+            display: block;
+            margin: 5px 0;
+            color: #000;
+        }
+
+        .graph {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .graph img {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-to-menu {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px;
+            background-color: #c39bd3;
+            color: black;
+            border: 4px double black;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-to-menu:hover {
+            background-color:  #d7bde2 ;
+        }
+
+        .images-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 5px;
+        }
+
+        .images-container img {
+            margin: 10px;
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+        }
+
+        .clear-button {
+            margin-top: 10px;
+            background-color: #c0392b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 10px;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .clear-button:hover {
+            background-color: #c82333;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ccc;
+            color: #333;
+            padding: 5px;
+            border-radius: 5px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s;
+            z-index: 1;
+            font-size: 0.9em;
+        }
+        
+        .menu button:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .menu button {
+            position: relative;
+            padding: 10px;
+            background-color: #c39bd3;
+            color: black;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 30px;
+            width: 200px;
+            text-align: center;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            font-size: 1em;
+            border: 4px double black;
+        }
+
+        .header-container {
+            text-align: center; /* Centra el contenido del contenedor */
+            margin-bottom:  -60px; /* Espacio debajo de la imagen */
+
+        }
+        .header-container img {
+            width: 60%; /* Cambia este valor según sea necesario */
+            max-width: 600px; /* Ajusta el tamaño máximo si lo deseas */
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0);
+            margin-bottom: 20px;
+        }
+    </style>
+    <!-- Añadir MathJax -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="header-container">
+        <img src="https://julioprofe.net/wp-content/uploads/2022/03/juliprofe_Que_deseas_aprender_hoy.png" alt="JulioProfe">
+    </div>
+    <h1>Calculadora de Integrales</h1>
+    <button class="back-to-menu" onclick="showMenu()">Volver al Menú</button>
+    <div class="menu">
+        <button onclick="showSection('indefinida')">
+            Integral Indefinida
+            <span class="tooltip">Encuentra la función primitiva de una función dada, representando el conjunto de todas las funciones cuya derivada es la función original, más una constante de integración.</span>
+        </button>
+        <button onclick="showSection('definida')">
+            Integral Definida
+            <span class="tooltip">Calcula el área bajo la curva de una función en un intervalo específico, proporcionando el valor numérico total de esta área.</span>
+        </button>
+        <button onclick="showSection('volumen')">
+            Volumen
+            <span class="tooltip">Grafica el volumen generado por la rotación.</span>
+        </button>
+        <button onclick="showSection('area')">
+            Área Bajo la Curva
+            <span class="tooltip">Grafica el área bajo la curva entre los límites.</span>
+        </button>
+        <button onclick="showSection('longitud_arco')">
+            Longitud del Arco
+            <span class="tooltip">Grafica la medida de la distancia a lo largo de una curva entre dos puntos.</span>
+        </button>
+    </div>
+    
+    <div id="indefinida" class="form-container">
+        <div class="images-container">
+            <img src="https://media.tenor.com/cJTSvduh3UwAAAAj/superhirn-mathematics.gif" alt="Kirby 1">
+        </div>
+        <h2>Calcular Integral Indefinida:</h2>
+        <form id="indefinida-form">
+            <input type="text" name="ecuacion" id="ecuacion" placeholder="f(x)=x^3" required>
+            <button type="submit">Calcular Integral Indefinida</button>
+            <button type="button" class="clear-button" onclick="clearFields('indefinida-form')">Limpiar Campos</button>
+            <div id="indefinida-results" class="results"></div>
+        </form>
+    </div>
+
+    <div id="definida" class="form-container">
+        <div class="images-container">
+            <img src="https://media.tenor.com/Ezs9wJkU2ygAAAAM/kalculus-calculus.gif" alt="Kirby 1">
+        </div>
+        <h2>Calcular Integral Definida:</h2>
+        <form id="definida-form">
+            <input type="text" name="ecuacion_definida" id="ecuacion_definida" placeholder="f(x)=x^3" required>
+            <input type="number" step="any" name="limite_inferior" id="limite_inferior" placeholder="Límite inferior del intervalo: 2" required>
+            <input type="number" step="any" name="limite_superior" id="limite_superior" placeholder="Límite superior del intervalo: 3" required>
+            <button type="submit">Calcular Integral Definida</button>
+            <button type="button" class="clear-button" onclick="clearFields('definida-form')">Limpiar Campos</button>
+            <div id="definida-results" class="results"></div>
+        </form>
+    </div>
+
+    <div id="volumen" class="form-container">
+        <div class="images-container">
+            <img src="https://media.tenor.com/2y_YJ0gTENYAAAAj/penguin-math.gif" alt="Kirby 1">
+        </div>
+        <h2>Graficar Volumen:</h2>
+        <form id="volumen-form">
+            <input type="text" name="primera_expresion" id="primera_expresion" placeholder="Primera expresión: x^2" required>
+            <input type="text" name="segunda_expresion" id="segunda_expresion" placeholder="Segunda expresión: x^3" required>
+            <input type="number" step="any" name="limite_inferior_vol" id="limite_inferior_vol" placeholder="Límite inferior del intervalo: 2" required>
+            <input type="number" step="any" name="limite_superior_vol" id="limite_superior_vol" placeholder="Límite superior del intervalo: 3" required>
+            <button type="submit">Graficar Volumen</button>
+            <button type="button" class="clear-button" onclick="clearFields('volumen-form')">Limpiar Campos</button>
+            <div id="volumen-results" class="graph"></div>
+        </form>
+    </div>
+    <div id="area" class="form-container">
+        <div class="images-container">
+            <img src="https://media.tenor.com/Vd-hE4bIEU8AAAAi/amicat1-math.gif" alt="Kirby 1">
+        </div>
+        <h2>Calcular Área Bajo la Curva:</h2>
+        <form id="area-form">
+            <input type="text" name="ecuacion_area" id="ecuacion_area" placeholder="f(x)=x^2" required>
+            <input type="number" step="any" name="limite_inferior_area" id="limite_inferior_area" placeholder="Límite inferior del intervalo: 2" required>
+            <input type="number" step="any" name="limite_superior_area" id="limite_superior_area" placeholder="Límite superior del intervalo: 3" required>
+            <button type="submit">Calcular Área</button>
+            <button type="button" class="clear-button" onclick="clearFields('area-form')">Limpiar Campos</button>
+            <div id="area-results" class="graph"></div>
+        </form>
+    </div>
+
+    <div id="longitud_arco" class="form-container">
+        <div class="images-container">
+            <img src="https://media1.tenor.com/m/CjuhMro95f4AAAAC/baby-yoda-norcom.gif" alt="Kirby 1">
+        </div>
+        <h2>Calcular Longitud del Arco:</h2>
+        <form id="longitud_arco-form">
+            <input type="text" name="ecuacion_longitud" id="ecuacion_longitud" placeholder="f(x)=x^2" required>
+            <input type="number" step="any" name="limite_inferior_arco" id="limite_inferior_arco" placeholder="Límite inferior del intervalo: 2" required>
+            <input type="number" step="any" name="limite_superior_arco" id="limite_superior_arco" placeholder="Límite superior del intervalo: 3" required>
+            <button type="submit">Calcular Longitud del Arco</button>
+            <button type="button" class="clear-button" onclick="clearFields('longitud_arco-form')">Limpiar Campos</button>
+            <div id="longitud_arco-results" class="graph"></div>
+        </form>
+    
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.form-container').forEach(function(container) {
+                container.classList.remove('active');
+            });
+            document.querySelector('.menu').style.display = 'none';
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function showMenu() {
+            document.querySelectorAll('.form-container').forEach(function(container) {
+                container.classList.remove('active');
+            });
+            document.querySelector('.menu').style.display = 'flex';
+        }
+
+        function clearFields(formId) {
+            const form = document.getElementById(formId);
+            form.reset();
+        }
+
+        function handleFormSubmit(formId, actionUrl, resultId) {
+            document.getElementById(formId).addEventListener('submit', function(event) {
+                event.preventDefault();  // Evita que el formulario se envíe de manera tradicional
+
+                var formData = new FormData(this);
+
+                console.log("Enviando datos:", formData);  // Agrega un mensaje de depuración para mostrar los datos enviados
+
+                fetch(actionUrl, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Datos recibidos:", data);  // Agrega un mensaje de depuración para mostrar los datos recibidos
+
+                    var resultsDiv = document.getElementById(resultId);
+                    if (data.error) {
+                        resultsDiv.innerHTML = `<p class="error">${data.error}</p>`;
+                    } else {
+                        resultsDiv.innerHTML = `
+                            <p class="results">${data.resultado ? `Resultado: \\(${data.resultado}\\)` : ''}</p>
+                            <p class="results">${data.procedimiento ? data.procedimiento : ''}</p>
+                            ${data.area_img || data.volumen_img || data.longitud_arco_img ? `<img src="data:image/png;base64,${data.area_img || data.volumen_img || data.longitud_arco_img}" alt="Gráfico">` : ''}
+                        `;
+                        MathJax.typeset();  // Vuelve a renderizar MathJax
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        }
+
+        // Manejadores de formularios
+        handleFormSubmit('indefinida-form', '/calcular_indefinida', 'indefinida-results');
+        handleFormSubmit('definida-form', '/calcular_definida', 'definida-results');
+        handleFormSubmit('volumen-form', '/graficar_volumen', 'volumen-results');
+        handleFormSubmit('area-form', '/calcular_area', 'area-results');
+        handleFormSubmit('longitud_arco-form', '/calcular_longitud_arco', 'longitud_arco-results');
+    </script>
+</body>
+</html>
